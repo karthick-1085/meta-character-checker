@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Your CSS code here */
+        #google-snippet-preview {
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .counter-label {
+            display: block;
+            margin-top: -15px; /* Adjusted margin to move the label up */
+            font-weight: bold;
+        }
+
+        #title-character-count,
+        #description-character-count {
+            float: right; /* Align the counters to the right */
+        }
+
+        #snippet-preview {
+            margin-top: 20px;
+        }
+
+        .search-result {
+            border: 2px solid #006621;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-url {
+            color: #006621;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* New class for blue color meta title */
+        .result-title-blue {
+            color: blue;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .result-description {
+            color: #545454;
+        }
+
+        .green {
+            color: green;
+        }
+
+        .red {
+            color: red;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Your HTML code here -->
+    <div id="google-snippet-preview">
+        <label for="url">URL:</label>
+        <input type="text" id="url" placeholder="Enter your URL">
+    
+        <label for="meta-title">Meta Title:</label>
+        <input type="text" id="meta-title" placeholder="Enter your meta title">
+        <span id="title-character-count" class="counter-label">Characters: <span id="title-count">0</span>/60</span>
+    
+        <label for="meta-description">Meta Description:</label>
+        <textarea id="meta-description" placeholder="Enter your meta description"></textarea>
+        <span id="description-character-count" class="counter-label">Characters: <span id="description-count">0</span>/160</span>
+    
+        <h2>Google Snippet Preview</h2>
+        <div id="snippet-preview" class="search-result">
+            <div class="result-url">www.example.com</div>
+            <div class="result-title"></div>
+            <div class="result-description"></div>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var urlInput = document.getElementById('url');
+        var metaTitleInput = document.getElementById('meta-title');
+        var metaDescriptionInput = document.getElementById('meta-description');
+
+        var titleCount = document.getElementById('title-count');
+        var descriptionCount = document.getElementById('description-count');
+        var titleCharacterCount = document.getElementById('title-character-count');
+        var descriptionCharacterCount = document.getElementById('description-character-count');
+
+        var resultUrl = document.querySelector('.result-url');
+        var resultTitle = document.querySelector('.result-title');
+        var resultDescription = document.querySelector('.result-description');
+
+        // Add event listeners to all input fields
+        urlInput.addEventListener('input', updatePreview);
+        metaTitleInput.addEventListener('input', updatePreview);
+        metaDescriptionInput.addEventListener('input', updatePreview);
+
+        // Add character count event listeners
+        metaTitleInput.addEventListener('input', updateCharacterCount);
+        metaDescriptionInput.addEventListener('input', updateCharacterCount);
+
+        function updatePreview() {
+            var url = urlInput.value || 'www.example.com';
+            var title = truncateString(metaTitleInput.value || 'Your Meta Title', 60);
+            var description = truncateString(metaDescriptionInput.value || 'Your Meta Description goes here. This is a preview.', 160);
+
+            resultUrl.innerText = url;
+            resultTitle.innerText = title;
+            resultDescription.innerText = description;
+
+            // Check if the title needs to be shown in blue color
+            if (title.length > 60) {
+                resultTitle.classList.add('result-title-blue');
+            } else {
+                resultTitle.classList.remove('result-title-blue');
+            }
+        }
+
+        function updateCharacterCount() {
+            var titleLength = metaTitleInput.value.length;
+            var descriptionLength = metaDescriptionInput.value.length;
+
+            titleCount.innerText = titleLength;
+            descriptionCount.innerText = descriptionLength;
+
+            titleCharacterCount.className = titleLength > 60 ? 'red' : 'green';
+            descriptionCharacterCount.className = descriptionLength > 160 ? 'red' : 'green';
+
+            // Update character count labels
+            titleCharacterCount.innerHTML = 'Characters: <span id="title-count">' + titleLength + '</span>/60';
+            descriptionCharacterCount.innerHTML = 'Characters: <span id="description-count">' + descriptionLength + '</span>/160';
+        }
+
+        function truncateString(str, maxLength) {
+            return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
+        }
+    });
+    </script>
+</body>
+</html>
